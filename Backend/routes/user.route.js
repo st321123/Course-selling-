@@ -8,12 +8,9 @@ import {
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 
 const router = express.Router();
-router.post("/register", register);
-router.post("/login", login);
-//router.post("/profile/update", isAuthenticated.update);
-router.post("/logout", logout);
-// router.route("/register").post(register);
-// router.route("/login").post(login);
-// router.route("/profile/update").post(isAuthenticated.update);
+router.post("/register", isAuthenticated, register);
+router.post("/login", isAuthenticated, login);
+router.get("/logout", isAuthenticated, logout);
+router.post("/profile/update/:userId", isAuthenticated, update);
 
 export default router;

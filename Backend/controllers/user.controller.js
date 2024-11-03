@@ -59,6 +59,7 @@ export const login = async (req, res) => {
       });
     }
     if (role != user.role) {
+      console.log(res);
       return res.status(400).json({
         message: "Account does not exit with current role",
         success: false,
@@ -102,19 +103,25 @@ export const logout = async (req, res) => {
 
 export const update = async (req, res) => {
   try {
-    const { email, password, bio, phone, fullname } = req.body;
-    if (!email || !password || !bio || !phone || !fullname) {
-      return res.status(400).json({
-        message: "something is missing...",
-        success: false,
-      });
-    }
-    const user = await User.findByIdAndUpdate(req.params.userId, {
+    const { email, password, bio, phone, fullname, role } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 8);
+
+    console.log(req.params.userId);
+    await User.findByIdAndUpdate(req.params.userId, {
       bio,
+      role,
       fullname,
       email,
       phone,
-      password,
+      password: hashedPassword,
     });
-  } catch (error) {}
+    return res.status(201).json({
+      message: "Updated successfully",
+      success: true,
+    });
+    //console.log(user);
+  } catch (error) {
+    console.log(error);
+  }
 };
