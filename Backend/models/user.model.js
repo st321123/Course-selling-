@@ -29,7 +29,11 @@ const userSchema = new mongoose.Schema(
       skills: { type: String },
       resume: { type: String },
       company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
-      profilePhoto: { type: String, default: "" },
+      profilePhoto: {
+        type: String,
+        default:
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png",
+      },
     },
   },
   { timestamps: true }
