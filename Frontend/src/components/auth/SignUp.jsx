@@ -8,6 +8,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { userUrl } from "../../utils/constants.js";
 import axios from "axios";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/redux/authSlice";
+import { Loader2 } from "lucide-react";
 function SignUp() {
   const [input, setInput] = useState({
     fullname: "",
@@ -23,11 +26,14 @@ function SignUp() {
   // useEffect(() => {
   //   submitHandler();
   // }, []);
+  const { loading } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   async function submitHandler(e) {
     e.preventDefault();
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${userUrl}/register`, input, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
@@ -38,16 +44,18 @@ function SignUp() {
       }
     } catch (error) {
       toast.error(error.response.data.message);
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 
   return (
-    <div>
+    <div className="h-screen">
       <Navbar />
       <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
           onSubmit={submitHandler}
-          className="w-1/2 border border-grey-200 p-4 rounded-md my-10"
+          className="w-1/2 border border-grey-200 p-4 rounded-md my-10 bg-white"
         >
           <h1 className="font-bold text-xl mb-5">SignUp</h1>
           <div className="my-2">
@@ -57,6 +65,7 @@ function SignUp() {
               value={input.fullname}
               name="fullname"
               onChange={changeEventHandler}
+              className="rounded"
             />
           </div>
           <div className="my-2">
@@ -66,6 +75,7 @@ function SignUp() {
               value={input.email}
               name="email"
               onChange={changeEventHandler}
+              className="rounded"
             />
           </div>
           <div className="my-2">
@@ -75,6 +85,7 @@ function SignUp() {
               value={input.password}
               name="password"
               onChange={changeEventHandler}
+              className="rounded"
             />
           </div>
           <div className="my-2">
@@ -84,6 +95,7 @@ function SignUp() {
               value={input.phone}
               name="phone"
               onChange={changeEventHandler}
+              className="rounded"
             />
           </div>
           <RadioGroup className="flex items-center space-x-5 my-5">
@@ -111,12 +123,23 @@ function SignUp() {
             </div>
           </RadioGroup>
           <div>
-            <Button
-              type="Submit"
-              className="w-full text-white bg-black rounded-md mb-3"
-            >
-              SignUp
-            </Button>
+            {loading ? (
+              <Button
+                variant="outline"
+                className="w-full text-white bg-black rounded-md mb-3 rounded-xl "
+              >
+                <Loader2 className="animate-spin mr-2 hover:text-black" />
+                Please Wait
+              </Button>
+            ) : (
+              <Button
+                type="Submit"
+                variant="outline"
+                className="w-full text-white bg-black rounded-md mb-3 hover:text-black rounded-xl"
+              >
+                SignUp
+              </Button>
+            )}
           </div>
 
           <span className="text-sm ">

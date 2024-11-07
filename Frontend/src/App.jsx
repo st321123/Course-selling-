@@ -19,9 +19,9 @@ const appRouter = createBrowserRouter([
 ]);
 function App() {
   return (
-    <>
+    <div className="bg-[#F1F1F2]">
       <RouterProvider router={appRouter} />
-    </>
+    </div>
   );
 }
 

@@ -9,7 +9,7 @@ function Navbar() {
   return (
     <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
       <h1 className="text-2xl font-bold">
-        Career<span className="text-[#F83200]">Wave</span>
+        Career<span className="text-[#1995AD]">Wave</span>
       </h1>
       <div className="flex items-center gap-12">
         <ul className="flex text-x2l font-bold items-center gap-5">
@@ -22,14 +22,17 @@ function Navbar() {
         {!user ? (
           <div className="flex items-center gap-2 h-5 ">
             <Link to="/login">
-              <Button variant="outline" className="bg-black text-white">
+              <Button
+                variant="outline"
+                className="bg-black text-white rounded-xl"
+              >
                 Login
               </Button>
             </Link>
             <Link to="/signup">
               <Button
                 variant="outline"
-                className="bg-black text-white hover:text-black"
+                className="bg-black text-white hover:text-black rounded-xl"
               >
                 SignUp
               </Button>

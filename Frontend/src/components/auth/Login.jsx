@@ -8,8 +8,16 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { userUrl } from "@/utils/constants";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/redux/authSlice";
+import { Loader2 } from "lucide-react";
 
 function Login() {
+  const { loading } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
   const [input, setInput] = useState({
     email: "",
     password: "",
@@ -18,30 +26,33 @@ function Login() {
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
-  const navigate = useNavigate();
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${userUrl}/login`, input, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       if (res.data.success) {
         navigate("/");
+
         toast.success(res.data.message);
       }
       console.log(input);
     } catch (error) {
       toast.error(error.response.data.message);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
   return (
-    <div>
+    <div className="h-screen">
       <Navbar />
       <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
           onSubmit={submitHandler}
-          className="w-1/2 border border-grey-200 p-4 rounded-md my-10"
+          className="w-1/2 border border-grey-200 p-4 rounded-md my-10 bg-white"
         >
           <h1 className="font-bold text-xl mb-5">Login</h1>
           <div className="my-2">
@@ -51,6 +62,7 @@ function Login() {
               name="email"
               value={input.email}
               onChange={changeEventHandler}
+              className="rounded"
             />
           </div>
           <div className="my-2">
@@ -60,6 +72,7 @@ function Login() {
               name="password"
               value={input.password}
               onChange={changeEventHandler}
+              className="rounded"
             />
           </div>
           <RadioGroup className="flex items-center space-x-5 my-5">
@@ -86,14 +99,23 @@ function Login() {
               <Label htmlFor="recruiter">Recruiter</Label>
             </div>
           </RadioGroup>
-          <div>
+          {loading ? (
+            <Button
+              variant="outline"
+              className="w-full text-white bg-black rounded-md mb-3 rounded-xl "
+            >
+              <Loader2 className="animate-spin mr-2 hover:text-black" />
+              Please Wait
+            </Button>
+          ) : (
             <Button
               type="Submit"
-              className="w-full text-white bg-black rounded-md mb-3"
+              variant="outline"
+              className="w-full text-white bg-black rounded-md mb-3 hover:text-black rounded-xl"
             >
               Login
             </Button>
-          </div>
+          )}
 
           <span className="text-sm ">
             Don't have an account?

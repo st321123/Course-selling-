@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 export const register = async (req, res) => {
   try {
     const { fullname, email, phone, password, role } = req.body;
+
     if (!fullname || !email || !phone || !password || !role) {
       return res.status(400).json({
         message: "something is missing...",
@@ -13,7 +14,7 @@ export const register = async (req, res) => {
     }
     const user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: "alredy registerd",
         success: false,
       });
@@ -26,6 +27,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       role,
     });
+
     return res.status(201).json({
       message: "Account Created Successfully.",
       success: true,
@@ -39,28 +41,28 @@ export const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
     if (!email || !password || !role) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: "something is missing...",
         success: false,
       });
     }
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: "Incorrect Email",
         success: false,
       });
     }
     const isPasswordMatched = await bcrypt.compare(password, user.password);
     if (!isPasswordMatched) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: "Incorrect Password",
         success: false,
       });
     }
     if (role != user.role) {
       console.log(res);
-      return res.status(400).json({
+      return res.status(401).json({
         message: "Account does not exit with current role",
         success: false,
       });
