@@ -61,7 +61,6 @@ export const login = async (req, res) => {
       });
     }
     if (role != user.role) {
-      console.log(res);
       return res.status(401).json({
         message: "Account does not exit with current role",
         success: false,
@@ -71,7 +70,6 @@ export const login = async (req, res) => {
     const tokenData = {
       userId: user._id,
     };
-    console.log(user._id);
 
     const token = await jwt.sign(tokenData, process.env.SECRET_KEY, {
       expiresIn: "1d",
@@ -85,6 +83,7 @@ export const login = async (req, res) => {
       })
       .json({
         message: "Welcome Back " + user.fullname,
+        user,
         success: true,
       });
   } catch (error) {
@@ -122,7 +121,6 @@ export const update = async (req, res) => {
       message: "Updated successfully",
       success: true,
     });
-    //console.log(user);
   } catch (error) {
     console.log(error);
   }

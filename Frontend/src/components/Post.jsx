@@ -25,8 +25,8 @@ function Post() {
             placeholder="find your dream job"
             className="outline-none border-none w-full pl-3"
           />
-          <Button className="rounded-r-full bg-[#A1D6E2]">
-            <Search className="h-5 w-5" />
+          <Button className="rounded-r-full bg-[#A1D6E2] hover:bg-[#1995AD]">
+            <Search className="h-5 w-5 " />
           </Button>
         </div>
       </div>
