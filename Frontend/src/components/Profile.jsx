@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import Navbar from "./shared/Navbar";
@@ -6,9 +6,13 @@ import { Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
 import AppliedJobs from "./AppliedJobs";
+import UpdateProfile from "./UpdateProfile";
+import { useSelector } from "react-redux";
 
-const skillArray = ["HTML", "CSS", "JavaScript", "Reactjs"];
 function Profile() {
+  const [update, setUpdate] = useState(false);
+  const { user } = useSelector((store) => store.auth);
+  console.log(user);
   const haveResume = true;
   return (
     <div>
@@ -21,31 +25,35 @@ function Profile() {
             </Avatar>
 
             <div>
-              <h1 className="font-medium text-xl">FullName</h1>
+              <h1 className="font-medium text-xl">{user.fullname}</h1>
               <p className="text-gray-500">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum
               </p>
             </div>
           </div>
-          <Button className="text-right" variant="outline">
+          <Button
+            className="text-right border-gray-300 bg-gray-100 rounded"
+            variant="outline"
+            onClick={() => setUpdate(true)}
+          >
             <Pen />
           </Button>
         </div>
         <div className="my-5">
           <div className="flex items-center gap-3 my-2">
             <Mail />
-            <span>email@gmail.com</span>
+            <span>{user.email}</span>
           </div>
         </div>
         <div className="flex items-center gap-3 my-2">
           <Contact />
-          <span>1234567890</span>
+          <span>{user.phone}</span>
         </div>
         <div>
           <h1 className="my-5 font-bold">Skills</h1>
           <div className="flex items-center gap-2">
-            {skillArray.length ? (
-              skillArray.map((item, index) => {
+            {user?.profile?.skills.length ? (
+              user?.profile?.skills.map((item, index) => {
                 return (
                   <Badge
                     className="text-red-600 font-bold"
@@ -57,7 +65,7 @@ function Profile() {
                 );
               })
             ) : (
-              <span className="text-sm ">Add Some Skills.</span>
+              <span className="text-sm ">NA</span>
             )}
           </div>
         </div>
@@ -80,6 +88,7 @@ function Profile() {
         <h1 className="font-bold text-xl mb-4">Applied Jobs</h1>
         <AppliedJobs />
       </div>
+      <UpdateProfile update={update} setUpdate={setUpdate} />
     </div>
   );
 }

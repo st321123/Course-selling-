@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { startTransition } from "react";
 
 const authSlice = createSlice({
   name: "auth",

@@ -23,7 +23,9 @@ function CategoryCrousel() {
         <CarouselContent>
           {category.map((categ, index) => (
             <CarouselItem className="md:basis-1/2 lg:basis-1/3 flex items-center justify-center">
-              <Button variant="outline">{categ}</Button>
+              <Button key={index} variant="outline">
+                {categ}
+              </Button>
             </CarouselItem>
           ))}
         </CarouselContent>

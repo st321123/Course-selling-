@@ -41,7 +41,7 @@ function Login() {
         toast.success(res.data.message);
       }
     } catch (error) {
-      toast.error(error.res.data.message);
+      toast.error(error.response.data.message);
     } finally {
       dispatch(setLoading(false));
     }

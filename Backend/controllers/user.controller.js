@@ -104,14 +104,14 @@ export const logout = async (req, res) => {
 
 export const update = async (req, res) => {
   try {
-    const { email, password, bio, phone, fullname, role } = req.body;
+    const { email, password, phone, fullname, bio, skills } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 8);
 
-    console.log(req.params.userId);
-    await User.findByIdAndUpdate(req.params.userId, {
-      bio,
-      role,
+    const skillArry = skills.split(",");
+
+    const user = await User.findByIdAndUpdate(req.params.userId, {
+      profile: { bio, skills: skillArry },
       fullname,
       email,
       phone,
@@ -120,6 +120,7 @@ export const update = async (req, res) => {
     return res.status(201).json({
       message: "Updated successfully",
       success: true,
+      user,
     });
   } catch (error) {
     console.log(error);

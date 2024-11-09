@@ -10,7 +10,7 @@ function LatestJobs() {
       </h1>
       <div className="grid grid-cols-3 gap-4 my-5 ">
         {jobArray.slice(0, 6).map((item, index) => {
-          return <JobCard />;
+          return <JobCard key={index} />;
         })}
       </div>
     </div>
