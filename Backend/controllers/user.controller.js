@@ -20,6 +20,14 @@ export const register = async (req, res) => {
       });
     }
     const hashedPassword = await bcrypt.hash(password, 8);
+    const pattern = /^\d{10}$/;
+    const validPhone = pattern.test(phone);
+    if (!validPhone) {
+      return res.status(401).json({
+        message: "Invalid Phone Number(10 digits)",
+        success: false,
+      });
+    }
     await User.create({
       fullname,
       email,
@@ -102,23 +110,48 @@ export const logout = async (req, res) => {
   }
 };
 
+export const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(400).json({
+        message: " user Not found ",
+        success: false,
+      });
+    }
+    return res.status(201).json({
+      message: " user found ",
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const update = async (req, res) => {
   try {
     const { email, password, phone, fullname, bio, skills } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 8);
 
-    const skillArry = skills.split(",");
+    let skillArry = [];
+    if (Array.isArray(skills)) {
+      skillArry = skills;
+    } else if (typeof skills === "string") {
+      skillArry = skills.split(",");
+    }
 
     const user = await User.findByIdAndUpdate(req.params.userId, {
-      profile: { bio, skills: skillArry },
+      profile: { bio: bio || "", skills: skillArry },
       fullname,
       email,
       phone,
       password: hashedPassword,
     });
+    await user.save();
     return res.status(201).json({
-      message: "Updated successfully",
+      message: "Profile Updated successfully",
       success: true,
       user,
     });

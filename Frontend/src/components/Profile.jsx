@@ -12,7 +12,6 @@ import { useSelector } from "react-redux";
 function Profile() {
   const [update, setUpdate] = useState(false);
   const { user } = useSelector((store) => store.auth);
-  console.log(user);
   const haveResume = true;
   return (
     <div>
@@ -21,14 +20,12 @@ function Profile() {
         <div className="flex justify-between">
           <div className="items-center flex gap-4">
             <Avatar className="h-24 w-24">
-              <AvatarImage src="https://st3.depositphotos.com/43745012/44906/i/450/depositphotos_449066958-stock-photo-financial-accounting-logo-financial-logo.jpg" />
+              <AvatarImage src={user?.profile?.profilePhoto} />
             </Avatar>
 
             <div>
               <h1 className="font-medium text-xl">{user.fullname}</h1>
-              <p className="text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum
-              </p>
+              <p className="text-gray-500">{user?.profile?.bio}</p>
             </div>
           </div>
           <Button

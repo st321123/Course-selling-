@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,31 +11,44 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { userUrl } from "@/utils/constants";
-import { setUser } from "../redux/authSlice.js";
+import { setLoading, setUser } from "../redux/authSlice.js";
 import { toast } from "sonner";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 
 function UpdateProfile({ update, setUpdate }) {
   const { user } = useSelector((store) => store.auth);
-
+  const { loading } = useSelector((store) => store.auth);
   const id = user._id;
   const [inputData, setInputData] = useState({
     fullname: user?.fullname,
     email: user?.email,
     phone: user?.phone,
     bio: user?.profile?.bio,
-    skills: user?.profile?.skills,
+    skills: user?.profile?.skills || "",
     password: user?.password,
     //resume: user?.profile?.resume,
   });
+
   const dispatch = useDispatch();
+
   const changeEventHandler = (e) => {
     setInputData({ ...inputData, [e.target.name]: e.target.value });
   };
+  // useEffect(() => {
+  //   // const res = axios.post(`${userUrl}/profile/update/${id}`, inputData, {
+  //   //   headers: { "Content-Type": "application/json" },
+  //   //   withCredentials: true,
+  //   // });
+  //   // if (res) {
+  //   //   submitHandler();
+  //   // }
+  // }, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      //   dispatch(setLoading(true));
       const res = await axios.post(
         `${userUrl}/profile/update/${id}`,
         inputData,
@@ -44,17 +57,30 @@ function UpdateProfile({ update, setUpdate }) {
           withCredentials: true,
         }
       );
-
       if (res.data.success) {
         dispatch(setUser(res.data.user));
         toast.success(res.data.message);
+        await refetchUserData();
       }
     } catch (error) {
       toast.error(error.response.data.message);
       console.log(error);
     }
+
+    // setLoading(false);
     setUpdate(false);
   };
+  const refetchUserData = async () => {
+    try {
+      const response = await axios.get(`${userUrl}/profile/${id}`, {
+        withCredentials: true,
+      });
+      dispatch(setUser(response.data.user));
+    } catch (error) {
+      console.error("Failed to refetch user data:", error);
+    }
+  };
+
   return (
     <div>
       <Dialog open={update}>
@@ -160,13 +186,23 @@ function UpdateProfile({ update, setUpdate }) {
               </div> */}
             </div>
             <DialogFooter>
-              <Button
-                type="Submit"
-                variant="outline"
-                className="w-full text-white bg-black rounded-md mb-3 hover:text-black rounded-xl"
-              >
-                Update
-              </Button>
+              {loading ? (
+                <Button
+                  variant="outline"
+                  className="w-full text-white bg-black rounded-md mb-3 rounded-xl "
+                >
+                  <Loader2 className="animate-spin mr-2 hover:text-black" />
+                  Please Wait
+                </Button>
+              ) : (
+                <Button
+                  type="Submit"
+                  variant="outline"
+                  className="w-full text-white bg-black rounded-md mb-3 hover:text-black rounded-xl"
+                >
+                  Update
+                </Button>
+              )}
             </DialogFooter>
           </form>
         </DialogContent>

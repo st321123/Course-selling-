@@ -3,11 +3,32 @@ import React from "react";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { LogOut, User2 } from "lucide-react";
+import { toast } from "sonner";
+import { userUrl } from "@/utils/constants";
+import axios from "axios";
+import { setUser } from "@/redux/authSlice";
 function Navbar() {
   const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const logOutHandler = async () => {
+    try {
+      const res = await axios.get(`${userUrl}/logout`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        dispatch(setUser(null));
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.Consolelog(error);
+      toast.error(error.response.data.message);
+    }
+  };
   return (
     <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
       <h1 className="text-2xl font-bold">
@@ -64,10 +85,8 @@ function Navbar() {
                 </Avatar>
 
                 <div>
-                  <h1 className="font-medium">Name</h1>
-                  <p className="text-sm ">
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  </p>
+                  <h1 className="font-medium">{user.fullname}</h1>
+                  <p className="text-sm ">{user?.profile?.bio}</p>
                 </div>
               </div>
               <div className="flex flex-col text-gray-600">
@@ -79,7 +98,9 @@ function Navbar() {
                 </div>
                 <div className="flex w-fit items-center gap-2 cursor-pointer">
                   <LogOut />
-                  <Button variant="link">Logout</Button>
+                  <Button onClick={logOutHandler} variant="link">
+                    Logout
+                  </Button>
                 </div>
               </div>
             </PopoverContent>
