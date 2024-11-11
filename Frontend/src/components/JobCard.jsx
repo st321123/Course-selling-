@@ -2,7 +2,6 @@ import React from "react";
 import { Badge } from "./ui/badge";
 
 function JobCard({ job }) {
-  console.log(job);
   return (
     <div className="p-5 rounded-xl shadow-xl bg-white border border-gray-200 cursor-pointer">
       <div>

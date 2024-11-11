@@ -13,23 +13,25 @@ export const createJob = async (req, res) => {
     const {
       title,
       description,
-      requirements,
+      role,
       salary,
       location,
       jobType,
       openings,
       companyId,
+      experience,
     } = req.body;
     //console.log("req----->>  ", req.body);
     if (
       !title ||
       !description ||
-      !requirements ||
+      !role ||
       !salary ||
       !location ||
       !jobType ||
       !openings ||
-      !companyId
+      !companyId ||
+      !experience
     ) {
       return res.status(401).json({
         message: "All fields are required.",
@@ -40,13 +42,14 @@ export const createJob = async (req, res) => {
     const job = await Job.create({
       title,
       description,
-      requirements,
+      role,
       salary,
       location,
       jobType,
       openings,
       company: companyId,
       createdBy: req.id,
+      experience,
     });
     return res.status(200).json({
       message: "job created Successfully.",
@@ -63,22 +66,24 @@ export const updateJob = async (req, res) => {
     const {
       title,
       description,
-      requirements,
+      role,
       salary,
       location,
       jobType,
       openings,
       companyId,
+      experience,
     } = req.body;
     if (
       !title ||
       !description ||
-      !requirements ||
+      !role ||
       !salary ||
       !location ||
       !jobType ||
       !openings ||
-      !companyId
+      !companyId ||
+      !experience
     ) {
       return res.status(400).json({
         message: "All fields are required.",
@@ -89,13 +94,14 @@ export const updateJob = async (req, res) => {
     const job = await Job.findByIdAndUpdate(req.params.id, {
       title,
       description,
-      requirements,
+      role,
       salary,
       location,
       jobType,
       openings,
       company: companyId,
       createdBy: req.id,
+      experience,
     });
     if (!job) {
       return res.status(400).json({
@@ -151,6 +157,26 @@ export const adminJobs = async (req, res) => {
     }
     return res.status(200).json({
       jobs,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getJobById = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id).populate({
+      path: "applications",
+    });
+
+    if (!job) {
+      return res
+        .status(400)
+        .json({ message: "Job Not Found.", success: false });
+    }
+    return res.status(200).json({
+      job,
       success: true,
     });
   } catch (error) {

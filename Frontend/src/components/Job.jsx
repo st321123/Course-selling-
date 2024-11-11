@@ -5,13 +5,23 @@ import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Badge } from "./ui/badge";
 import { useNavigate } from "react-router-dom";
 
-function Job() {
+function Job({ job }) {
+  const daysAgo = (mongodbTime) => {
+    const createdAt = new Date(mongodbTime);
+    const currentTime = new Date(mongodbTime);
+    const timeDiff = createdAt - currentTime;
+    return Math.floor((timeDiff / 1000) * 24 * 60 * 60);
+  };
   const navigate = useNavigate();
   const jobId = "sdfjk";
   return (
     <div className="w-[80%] mx-auto p-5 rounded shadow-xl bg-white border-gray-200">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">2days ago</p>
+        <p className="text-sm text-gray-500">
+          {daysAgo(job?.createdAt) === 0
+            ? "Today"
+            : `${daysAgo(job?.createdAt)} days ago`}
+        </p>
         <Button variant="outline" className="rounded-full" size="icon">
           <Bookmark />
         </Button>
@@ -23,30 +33,30 @@ function Job() {
           </Avatar>
         </Button>
         <div>
-          <h1 className="font-medium text-lg">CompanyName</h1>
-          <p className="text-sm text-gray-500">contry</p>
+          <h1 className="font-medium text-lg">{job?.company?.name}</h1>
+          <p className="text-sm text-gray-500">{job?.location}</p>
         </div>
       </div>
       <div>
-        <h1 className="font-medium text-lg my-2">Job Title</h1>
-        <p className="text-sm text-gray-500">description</p>
+        <h1 className="font-medium text-lg my-2">{job?.title}</h1>
+        <p className="text-sm text-gray-500">{job?.description}</p>
       </div>
       <div>
         <Badge className="text-blue-600 font-bold" variant="ghost">
-          12 positions
+          {job.openings} Position
         </Badge>
         <Badge className="text-red-600 font-bold" variant="ghost">
-          PartTime
+          {job?.jobType}
         </Badge>
         <Badge className="text-purple-600 font-bold" variant="ghost">
-          24LPA
+          {job?.salary / 100000} LPA
         </Badge>
       </div>
       <div className="flex items-center gap-4 mt-4">
         <Button
           variant="outline"
           className="rounded-full bg-[#1995AD] text-white"
-          onClick={() => navigate("/description/" + { jobId })}
+          onClick={() => navigate("/description/" + job?._id)}
         >
           Details
         </Button>

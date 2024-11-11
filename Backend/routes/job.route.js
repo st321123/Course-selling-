@@ -4,6 +4,7 @@ import {
   adminJobs,
   createJob,
   getAllJob,
+  getJobById,
   updateJob,
 } from "../controllers/job.controller.js";
 
@@ -15,4 +16,5 @@ router.post("/create", isAuthenticated, createJob);
 router.post("/update/:id", isAuthenticated, updateJob);
 router.get("/alljobs", getAllJob);
 router.get("/adminjobs", adminJobs);
+router.get("/get/:id", getJobById);
 export default router;

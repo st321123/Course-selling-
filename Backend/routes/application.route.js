@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 
-router.post("/apply/:id", isAuthenticated, applyJob);
+router.get("/apply/:id", isAuthenticated, applyJob);
 router.post("/update/:id", isAuthenticated, updateStatus);
 
 export default router;

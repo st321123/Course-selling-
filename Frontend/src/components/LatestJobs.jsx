@@ -2,7 +2,6 @@ import React from "react";
 import JobCard from "./JobCard";
 import { useSelector } from "react-redux";
 
-const jobArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 function LatestJobs() {
   const { allJobs } = useSelector((store) => store.job);
   return (
