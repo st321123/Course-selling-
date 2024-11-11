@@ -17,6 +17,8 @@ function JobDescription() {
       (application) => application.applicant === user?._id
     )
   );
+  console.log("This is applied ",applied);
+  
 
   const applyButtonHandler = async () => {
     try {
@@ -42,7 +44,7 @@ function JobDescription() {
         if (res.data.success) {
           setJob(res.data.job);
           setApplied(
-            job?.applications?.some(
+            res.data.job?.applications?.some(
               (application) => application.applicant === user?._id
             )
           );
